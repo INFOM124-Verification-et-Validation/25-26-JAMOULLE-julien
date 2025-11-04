@@ -8,7 +8,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests the methods provided by the {@link Clyde} class.
@@ -55,11 +58,9 @@ public class ClydeTest {
     void Distance_Lower_Than_8_and_FreePath() {
 
         //Arrange
-        char[][] map = {
-            {'#','#','#','#','#','#','#','#','#','#','#','#'},
-            {'#','P',' ',' ','C',' ',' ',' ',' ',' ',' ','#'},
-            {'#','#','#','#','#','#','#','#','#','#','#','#'}
-        };
+        List<String> map = List.of("############",
+                                   "#P  C      #",
+                                   "############");
 
         //Act
         level= mapParser.parseMap(map);
@@ -67,10 +68,11 @@ public class ClydeTest {
         pacman.setDirection(Direction.EAST);
         level.registerPlayer(pacman);
         clyde= Navigation.findUnitInBoard(Clyde.class,level.getBoard());
+        assert clyde != null;
         clydeDirection= clyde.nextAiMove();
 
         //Assert
-        assert clydeDirection.equals(Direction.SOUTH);
+        assertEquals(Optional.of(Direction.EAST),clydeDirection);
 
     }
 
@@ -78,11 +80,9 @@ public class ClydeTest {
     void Distance_Greater_Than_8_and_FreePath() {
 
         //Arrange
-        char[][] map = {
-            {'#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-            {'#','P',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','C','#'},
-            {'#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
-        };
+        List<String> map = List.of("#############",
+                                   "#P         C#",
+                                   "#############");
 
         //Act
         level= mapParser.parseMap(map);
@@ -90,11 +90,56 @@ public class ClydeTest {
         pacman.setDirection(Direction.EAST);
         level.registerPlayer(pacman);
         clyde= Navigation.findUnitInBoard(Clyde.class,level.getBoard());
+        assert clyde != null;
         clydeDirection=clyde.nextAiMove();
 
         //Assert
-        assert clydeDirection.equals(Direction.NORTH);
+        assertEquals(Optional.of(Direction.WEST),clydeDirection);
 
+
+    }
+
+    @Test
+    void Distance_Greater_Than_8_and_PathBlocked() {
+
+        //Arrange
+        List<String> map = List.of("#############",
+                                   "#P#########C#",
+                                   "#############");
+
+        //Act
+        level= mapParser.parseMap(map);
+        pacman=playerFactory.createPacMan();
+        pacman.setDirection(Direction.EAST);
+        level.registerPlayer(pacman);
+        clyde= Navigation.findUnitInBoard(Clyde.class,level.getBoard());
+        assert clyde != null;
+        clydeDirection=clyde.nextAiMove();
+
+        //Assert
+        assertEquals(Optional.empty(),clydeDirection);
+
+
+    }
+
+    @Test
+    void Distance_Equals_8_and_Mulitple_Move(){
+        //Arrange
+        List<String> map = List.of("#         ###",
+                                   "#P       C  #",
+                                   "########    #");
+
+        //Act
+        level= mapParser.parseMap(map);
+        pacman=playerFactory.createPacMan();
+        pacman.setDirection(Direction.EAST);
+        level.registerPlayer(pacman);
+        clyde= Navigation.findUnitInBoard(Clyde.class,level.getBoard());
+        assert clyde != null;
+        clydeDirection=clyde.nextAiMove();
+
+        //Assert
+        assertEquals(Optional.of(Direction.EAST),clydeDirection);
 
     }
 
