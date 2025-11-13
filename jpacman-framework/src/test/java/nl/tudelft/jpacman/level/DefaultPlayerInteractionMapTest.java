@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class DefaultPlayerInteractionMapTest {
 
     @BeforeEach
@@ -32,7 +34,7 @@ public class DefaultPlayerInteractionMapTest {
     playerInteractionMap.collide(pacman, clyde);
 
     //assert
-    assert !pacman.isAlive();
+    assertThat(pacman.isAlive()).isFalse();
     }
 
     @Test
@@ -45,8 +47,8 @@ public class DefaultPlayerInteractionMapTest {
     playerInteractionMap.collide(pacman,pellet);
 
     //assert
-    assert pacman.getScore()==10;
-    assert !pellet.hasSquare();
+    assertThat(pacman.getScore()).isEqualTo(10);
+    assertThat(pellet.hasSquare()).isFalse();
     }
 
 }
